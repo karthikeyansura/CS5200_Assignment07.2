@@ -24,7 +24,7 @@ print("\nTotal number of different products offered by each supplier:")
 cursor.execute("""
     SELECT s.SupplierName, COUNT(p.ProductID) AS ProductCount 
     FROM Suppliers s
-    LEFT JOIN Products p ON s.SupplierID = p.SupplierID 
+    LEFT JOIN Products p ON s.SupplierID = p.SupplierID
     GROUP BY s.SupplierID
     ORDER BY s.SupplierName;
 """)
