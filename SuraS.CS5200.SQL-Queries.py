@@ -10,6 +10,7 @@ def connect_to_database(db_path):
     cursor = dbCon.cursor()
     return dbCon, cursor
 
+
 # Function to get the name, contact name, and country of all suppliers sorted by supplier name
 def get_suppliers_sorted_by_name(cursor):
     print("\nSuppliers sorted by name:")
@@ -45,8 +46,13 @@ def get_countries_with_more_than_ten_suppliers(cursor):
         GROUP BY Country 
         HAVING COUNT(SupplierID) > 10;
     """)
-    for row in cursor.fetchall():
-        print(row)
+    rows = cursor.fetchall()
+    
+    if rows:  # Check if there are any rows
+        for row in rows:
+            print(row)
+    else:
+        print("No countries have more than 10 suppliers.")
 
 
 # Main function
