@@ -1,4 +1,5 @@
-# Title: Query a Database with SQL in Python
+# Title: Assignment 07.2
+# SubTitle: Query a Database with SQL in Python
 # Author: Sai Karthikeyan, Sura
 # Date: 02/25/2025
 
@@ -11,6 +12,12 @@ def connect_to_database(db_path):
     return dbCon, cursor
 
 
+# Function to print columns names
+def print_column_names(cursor):
+    column_names = [description[0] for description in cursor.description]
+    print(column_names)
+    
+
 # Function to get the name, contact name, and country of all suppliers sorted by supplier name
 def get_suppliers_sorted_by_name(cursor):
     print("\nSuppliers sorted by name:")
@@ -19,6 +26,7 @@ def get_suppliers_sorted_by_name(cursor):
         FROM Suppliers 
         ORDER BY SupplierName;
     """)
+    print_column_names(cursor)
     for row in cursor.fetchall():
         print(row)
 
@@ -33,6 +41,7 @@ def get_total_products_by_supplier(cursor):
         GROUP BY s.SupplierID
         ORDER BY s.SupplierName;
     """)
+    print_column_names(cursor)
     for row in cursor.fetchall():
         print(row)
 
@@ -47,21 +56,32 @@ def get_countries_with_more_than_ten_suppliers(cursor):
         HAVING COUNT(SupplierID) > 10;
     """)
     rows = cursor.fetchall()
-    
     if rows:  # Check if there are any rows
         for row in rows:
             print(row)
     else:
-        print("No countries have more than 10 suppliers.")
+        print("No countries have more than 10 suppliers")
 
 
+# Function to list the country and the number of suppliers
+def get_number_of_suppliers_by_country(cursor):
+    print("\nNumber of suppliers in each country:")
+    cursor.execute("""
+        SELECT Country, COUNT(SupplierID) AS SupplierCount 
+        FROM Suppliers 
+        GROUP BY Country;
+    """)
+    print_column_names(cursor)
+    for row in cursor.fetchall():
+        print(row)
+        
+        
 # Main function
 def main():
   
     # Step 1: Connect to the SQLite database
     db_path = "OrdersDB.sqlitedb.db"
-    dbCon = sqlite3.connect(db_path)
-    cursor = dbCon.cursor()
+    dbCon, cursor = connect_to_database(db_path)
 
     # Step 2: Get the name, contact name, and country of all suppliers sorted by supplier name
     get_suppliers_sorted_by_name(cursor)
@@ -72,7 +92,10 @@ def main():
     # Step 4: List countries with more than ten suppliers
     get_countries_with_more_than_ten_suppliers(cursor)
 
-    # Step 5: Close the connection
+    # Step 5: List countries with the number of suppliers
+    get_number_of_suppliers_by_country(cursor)
+
+    # Step 6: Close the connection
     dbCon.close()
 
 
